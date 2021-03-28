@@ -30,8 +30,10 @@ fn main() {
     // Create a new game and run it.
     let mut app = app::App::new(GlGraphics::new(opengl), WIDTH as i32, HEIGHT as i32);
 
-    let mut events = Events::new(EventSettings::new());
+    let mut event_setting = EventSettings::new();
+    event_setting.ups = 20;
 
+    let mut events = Events::new(event_setting);
 
     while let Some(e) = events.next(&mut window) {
         if let Some(args) = e.render_args() {

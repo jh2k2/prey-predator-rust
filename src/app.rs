@@ -4,14 +4,18 @@ use crate::board::{Board};
 
 pub struct App {
     gl: GlGraphics,
-    board: Board
+    board: Board,
+    width: i32,
+    height: i32
 }
 
 impl App {
     pub fn new(graphic: GlGraphics, width: i32, height: i32) -> App {
         App {
             gl: graphic,
-            board: Board::new(15, 1, width, height)
+            board: Board::new(15, 1, width, height),
+            width: width,
+            height: height
         }
     }
 
@@ -50,9 +54,11 @@ impl App {
 
     pub fn update(&mut self) {
         //rabbit
-        /*for rabbit in self.board.rabbit {
-                
-        }*/
+        let rabbit_vec = &self.board.rabbit;
+        let fox_vec:Vec<(i32, i32)> = self.board.fox.iter().map(|x| (x.x_coord, x.y_coord)).collect();
+        for i in 0..rabbit_vec.len() {
+            self.board.rabbit[i].run_away(&fox_vec, (self.width, self.height));
+        }
 
          //fox
         let fox_vec = &self.board.fox;

@@ -11,7 +11,7 @@ impl Fox {
         Fox {
             x_coord: x,
             y_coord: y,
-            speed: 1
+            speed: 2
         }
     }
 

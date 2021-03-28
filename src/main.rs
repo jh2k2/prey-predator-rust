@@ -32,9 +32,15 @@ fn main() {
 
     let mut events = Events::new(EventSettings::new());
 
+
     while let Some(e) = events.next(&mut window) {
         if let Some(args) = e.render_args() {
             app.render(&args);
         }
+
+        if let Some(_args) = e.update_args() {
+            app.update();
+        }
+
     }
 }

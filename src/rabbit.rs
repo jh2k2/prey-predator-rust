@@ -1,3 +1,4 @@
+
 pub struct Rabbit {
     pub x_coord: i32,
     pub y_coord: i32,

@@ -1,0 +1,10 @@
+add:
+    randomness not straightline when running/chasing
+    traits
+    fox die when no food
+    rabbit multiply
+    traits/generation?
+
+fix:
+    exit program(due to error) when rabbit amount = 0,
+    rabbit not moving after hitting the border

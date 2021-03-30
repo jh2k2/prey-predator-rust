@@ -1,9 +1,15 @@
 add:
-    randomness not straightline when running/chasing
-    traits
-    fox die when no food
+    => randomness not straightline when running/chasing
+        velocity and direction implementation
+        hunt state/rest state/move state
+    
+    body of water/obstacles
     rabbit multiply
-    traits/generation?
+    traits
+        fox: hunger, acceleration, hunger_decrease_rate, eating_rate, etc
+    fox die when no food
+    custom setting(fox/rabbit number, etc)
+    generation?
 
 fix:
     exit program(due to error) when rabbit amount = 0,

@@ -5,17 +5,18 @@ use rand::Rng;
 pub struct Board {
     pub rabbit: Vec<Rabbit>,
     pub fox: Vec<Fox>,
-    pub occupied_coord: Vec<(char, i32, i32)>
+    pub occupied_coord: Vec<(char, f32, f32)>,
+    pub border: (f32, f32, f32, f32)
 }
 
 impl Board {
-    pub fn new(rabbit_count: u32, fox_count: u32, height: i32, width: i32) -> Board {
+    pub fn new(rabbit_count: u32, fox_count: u32, width: f32, height: f32) -> Board {
         let mut rng = rand::thread_rng();
-        let mut occupied_coord: Vec<(char, i32, i32)> = Vec::new();
+        let mut occupied_coord: Vec<(char, f32, f32)> = Vec::new();
         let rabbit_vec: Vec<Rabbit> = (0..rabbit_count)
         .map(|_x| {
-            let x_coord = rng.gen_range(0..width);
-            let y_coord = rng.gen_range(0..height);
+            let x_coord = rng.gen_range(50..width as i32-50) as f32;
+            let y_coord = rng.gen_range(50..height as i32-50) as f32;
             occupied_coord.push(('r', x_coord, y_coord));
             Rabbit::new(x_coord, y_coord)
         })
@@ -23,8 +24,8 @@ impl Board {
 
         let fox_vec: Vec<Fox> = (0..fox_count)
         .map(|_x| { 
-            let x_coord = rng.gen_range(0..width);
-            let y_coord = rng.gen_range(0..height);
+            let x_coord = rng.gen_range(50..width as i32-50) as f32;
+            let y_coord = rng.gen_range(50..height as i32-50) as f32;
             occupied_coord.push(('f', x_coord, y_coord));
             Fox::new(x_coord, y_coord)
         })
@@ -33,11 +34,30 @@ impl Board {
         Board {
             rabbit: rabbit_vec,
             fox: fox_vec,
-            occupied_coord: occupied_coord
+            occupied_coord: occupied_coord,
+            border: (50.0, 50.0, width-50.0, height-50.0)
+        }
+    }
+
+    pub fn fox_move(&mut self) {
+        let fox_vec = &self.fox;
+
+        let rabbit_vec:Vec<(f32, f32)> = self.rabbit.iter().map(|x| (x.x_coord, x.y_coord)).collect();
+        for i in 0..fox_vec.len() {
+            self.fox[i].moves(&rabbit_vec);
+        }
+    }
+
+    pub fn rabbit_move(&mut self) {
+        let rabbit_vec = &self.rabbit;
+        let fox_vec:Vec<(f32, f32)> = self.fox.iter().map(|x| (x.x_coord, x.y_coord)).collect();
+        for i in 0..rabbit_vec.len() {
+            //self.board.rabbit[i].run_away(&fox_vec, self.border);
         }
     }
 
     pub fn check_eaten(&mut self) {
+        //TODO CHECK FOR COLLISION
         for fox in &self.fox {
             let index: Option<usize> = self.rabbit.iter().position(|r| r.x_coord == fox.x_coord && r.y_coord == fox.y_coord);
             match index {
@@ -45,7 +65,7 @@ impl Board {
                     println!("Rabbit removed! Size: {}", self.rabbit.len());
                     self.rabbit.remove(y)
                 },
-                None => Rabbit::new(1, 1)
+                None => Rabbit::new(1.0, 1.0)
             };
         }
     }

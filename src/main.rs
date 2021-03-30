@@ -28,7 +28,7 @@ fn main() {
         .unwrap();
 
     // Create a new game and run it.
-    let mut app = app::App::new(GlGraphics::new(opengl), WIDTH as i32, HEIGHT as i32);
+    let mut app = app::App::new(GlGraphics::new(opengl), WIDTH as f32, HEIGHT as f32);
 
     let mut event_setting = EventSettings::new();
     event_setting.ups = 20;

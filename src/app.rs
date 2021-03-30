@@ -2,20 +2,19 @@ use opengl_graphics::GlGraphics;
 use piston::input::*;
 use crate::board::{Board};
 
+const FOX_COUNT: u32 = 3;
+const RABBIT_COUNT: u32 = 15;
+
 pub struct App {
     gl: GlGraphics,
     board: Board,
-    width: i32,
-    height: i32
 }
 
 impl App {
-    pub fn new(graphic: GlGraphics, width: i32, height: i32) -> App {
+    pub fn new(graphic: GlGraphics, width: f32, height: f32) -> App {
         App {
             gl: graphic,
-            board: Board::new(15, 1, width, height),
-            width: width,
-            height: height
+            board: Board::new(RABBIT_COUNT, FOX_COUNT, width, height),
         }
     }
 
@@ -34,40 +33,33 @@ impl App {
 
             //draw rabbit
             for i in 0..rabbit_vec.len()  {
-                let trans = c.transform.trans(
+                let trans = c.transform
+                .trans(
                         rabbit_vec[i].x_coord as f64,
                         rabbit_vec[i].y_coord as f64,
-                    );
-                ellipse(RABBIT_COLOR, [0.0, 0.0, 5.0, 5.0], trans, gl);
+                    )
+                .scale(rabbit_vec[i].size as f64, rabbit_vec[i].size as f64);
+
+                rectangle(RABBIT_COLOR, [0.0, 0.0, 5.0, 5.0], trans, gl);
             }
 
             //draw fox
              for i in 0..fox_vec.len() {
-                 let trans = c.transform.trans(
+                 let trans = c.transform
+                 .trans(
                         fox_vec[i].x_coord as f64,
                         fox_vec[i].y_coord as f64,
-                    );
-                ellipse(FOX_COLOR, [0.0, 0.0, 5.0, 5.0], trans, gl);
+                    )
+                .scale(fox_vec[i].size as f64, fox_vec[i].size as f64);
+                rectangle(FOX_COLOR, [0.0, 0.0, 5.0, 5.0], trans, gl);
             }
         });
     }
 
     pub fn update(&mut self) {
-        //rabbit
-        let rabbit_vec = &self.board.rabbit;
-        let fox_vec:Vec<(i32, i32)> = self.board.fox.iter().map(|x| (x.x_coord, x.y_coord)).collect();
-        for i in 0..rabbit_vec.len() {
-            self.board.rabbit[i].run_away(&fox_vec, (self.width, self.height));
-        }
-
-         //fox
-        let fox_vec = &self.board.fox;
-        let rabbit_vec:Vec<(i32, i32)> = self.board.rabbit.iter().map(|x| (x.x_coord, x.y_coord)).collect();
-        for i in 0..fox_vec.len() {
-            self.board.fox[i].find_prey(&rabbit_vec);
-        }
-
         //board
+        self.board.rabbit_move();
+        self.board.fox_move();
         self.board.check_eaten();
     }
 }

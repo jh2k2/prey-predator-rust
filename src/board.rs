@@ -44,8 +44,11 @@ impl Board {
 
         let rabbit_vec:Vec<(f32, f32)> = self.rabbit.iter().map(|x| (x.x_coord, x.y_coord)).collect();
         for i in 0..fox_vec.len() {
-            self.fox[i].determine_direction(&rabbit_vec, &self.border);
-            self.fox[i].moves();
+            for _i in 0..self.fox[i].speed as i32 {
+                self.fox[i].determine_direction(&rabbit_vec);
+                self.fox[i].border_check(&self.border);
+                self.fox[i].moves();
+            }
         }
     }
 
@@ -53,7 +56,11 @@ impl Board {
         let rabbit_vec = &self.rabbit;
         let fox_vec:Vec<(f32, f32)> = self.fox.iter().map(|x| (x.x_coord, x.y_coord)).collect();
         for i in 0..rabbit_vec.len() {
-            //self.board.rabbit[i].run_away(&fox_vec, self.border);
+            for _i in 0..self.rabbit[i].speed as i32 {
+                self.rabbit[i].determine_direction(&fox_vec);
+                self.rabbit[i].border_check(&self.border);
+                self.rabbit[i].moves();
+            }
         }
     }
 

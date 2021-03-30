@@ -2,7 +2,7 @@ use opengl_graphics::GlGraphics;
 use piston::input::*;
 use crate::board::{Board};
 
-const FOX_COUNT: u32 = 3;
+const FOX_COUNT: u32 = 2;
 const RABBIT_COUNT: u32 = 15;
 
 pub struct App {

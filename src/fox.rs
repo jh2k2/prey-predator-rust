@@ -24,13 +24,12 @@ impl Fox {
             x_direction: 1.0,
             y_direction: 1.0,
             num_move: 0.0,
-            detection_range: 30.0,
+            detection_range: 10.0,
             state: 1,
         }
     }
 
-    pub fn determine_direction(&mut self, rabbit_vec: &Vec<(f32, f32)>, border: &(f32, f32, f32, f32)) -> () {
-        //border check
+    pub fn determine_direction(&mut self, rabbit_vec: &Vec<(f32, f32)>) -> () {
         //TODO obstacle
 
         //Target check
@@ -74,7 +73,20 @@ impl Fox {
     }
 
     pub fn moves(&mut self) {
-        self.x_coord += self.speed * self.x_direction;
-        self.y_coord += self.speed * self.y_direction;
+        self.x_coord += self.x_direction;
+        self.y_coord += self.y_direction;
+    }
+
+    pub fn border_check(&mut self, border: &(f32, f32, f32, f32)) {
+                //border check for x
+        if self.x_coord + self.x_direction < border.0 ||  self.x_coord + self.x_direction >= border.2 {
+            self.x_coord -= self.x_direction;
+            self.num_move = 0.0;
+        }
+        //border check for y
+        if self.y_coord + self.y_direction < border.1 ||  self.y_coord + self.y_direction >= border.3 {
+            self.y_coord -= self.y_direction;
+            self.num_move = 0.0;
+        }
     }
 }

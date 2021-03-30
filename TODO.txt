@@ -2,7 +2,7 @@ add:
     => randomness not straightline when running/chasing
         velocity and direction implementation
         hunt state/rest state/move state
-    
+    hit box
     body of water/obstacles
     rabbit multiply
     traits
@@ -12,5 +12,4 @@ add:
     generation?
 
 fix:
-    exit program(due to error) when rabbit amount = 0,
     rabbit not moving after hitting the border

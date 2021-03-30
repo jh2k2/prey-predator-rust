@@ -29,8 +29,9 @@ impl Fox {
         }
     }
 
-    pub fn moves(&mut self, rabbit_vec: &Vec<(f32, f32)>) -> () {
-        //TODO obstacle/border check
+    pub fn determine_direction(&mut self, rabbit_vec: &Vec<(f32, f32)>, border: &(f32, f32, f32, f32)) -> () {
+        //border check
+        //TODO obstacle
 
         //Target check
         if self.state == 1 {
@@ -41,7 +42,7 @@ impl Fox {
             
             rabbit_distance.sort_by(|a, b| a.partial_cmp(b).unwrap());
 
-            if rabbit_distance[0].0 <= self.detection_range {
+            if rabbit_distance.len() != 0 && rabbit_distance[0].0 <= self.detection_range {
                 //go toward target
                 match &self.x_coord - rabbit_distance[0].1 {
                     y if y < 0.0 => self.x_direction = 1.0,
@@ -54,26 +55,25 @@ impl Fox {
                     y if y > 0.0 => self.y_direction = -1.0,
                     _ => self.y_direction = 0.0
                 }
-                self.x_coord += self.speed * self.x_direction;
-                self.y_coord += self.speed * self.y_direction;
+                self.num_move = 0.0;
                 return ();
             }
         }
 
         if self.num_move > 0.0 { 
-            self.x_coord += self.speed * self.x_direction;
-            self.y_coord += self.speed * self.y_direction;
             self.num_move -= 1.0;
+            return ();
         }
 
         let mut rng = rand::thread_rng();
-        self.num_move = rng.gen_range(0..6) as f32;
+        self.num_move = rng.gen_range(4..12) as f32;
 
         //randomize direction
         self.x_direction = rng.gen_range(-1..2) as f32;
         self.y_direction = rng.gen_range(-1..2) as f32;
+    }
 
-
+    pub fn moves(&mut self) {
         self.x_coord += self.speed * self.x_direction;
         self.y_coord += self.speed * self.y_direction;
     }

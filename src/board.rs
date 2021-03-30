@@ -44,7 +44,8 @@ impl Board {
 
         let rabbit_vec:Vec<(f32, f32)> = self.rabbit.iter().map(|x| (x.x_coord, x.y_coord)).collect();
         for i in 0..fox_vec.len() {
-            self.fox[i].moves(&rabbit_vec);
+            self.fox[i].determine_direction(&rabbit_vec, &self.border);
+            self.fox[i].moves();
         }
     }
 
@@ -62,7 +63,6 @@ impl Board {
             let index: Option<usize> = self.rabbit.iter().position(|r| r.x_coord == fox.x_coord && r.y_coord == fox.y_coord);
             match index {
                 Some(y) => {
-                    println!("Rabbit removed! Size: {}", self.rabbit.len());
                     self.rabbit.remove(y)
                 },
                 None => Rabbit::new(1.0, 1.0)

@@ -13,6 +13,7 @@ mod app;
 mod rabbit;
 mod board;
 mod fox;
+mod traits;
 
 const WIDTH: f64 = 200.0;
 const HEIGHT: f64 = 200.0;

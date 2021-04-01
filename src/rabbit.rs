@@ -1,16 +1,38 @@
 use rand::Rng;
+use crate::traits::Traits;
 
 pub struct Rabbit {
     pub x_coord: f32,
     pub y_coord: f32,
-    pub speed: f32,
-    pub size: f32,
-    pub acceleration: f32,
     pub x_direction: f32,
     pub y_direction: f32,
+
+    //stats
+    pub speed: f32,
+    pub size: f32,
     pub state: i32,
     pub detection_range: f32,
     pub num_move: f32,
+}
+
+impl Traits for Rabbit {
+    fn border_check(&mut self, border: &(f32, f32, f32, f32)) {
+        //border check for x
+        if self.x_coord + self.x_direction < border.0 ||  self.x_coord + self.x_direction >= border.2 {
+            self.x_coord -= self.x_direction;
+            self.num_move = 0.0;
+        }
+        //border check for y
+        if self.y_coord + self.y_direction < border.1 || self.y_coord + self.y_direction >= border.3 {
+            self.y_coord -= self.y_direction;
+            self.num_move = 0.0;
+        }
+    }
+
+    fn moves(&mut self) {
+        self.x_coord += self.x_direction;
+        self.y_coord += self.y_direction;
+    }
 }
 
 impl Rabbit {
@@ -20,12 +42,11 @@ impl Rabbit {
             y_coord: y,
             speed: 3.0,
             size: 1.0,
-            acceleration: 0.2,
             x_direction: 0.0,
             y_direction: 0.0,
             state: 1,
             num_move: 0.0,
-            detection_range: 10.0
+            detection_range: 30.0
         }
     }
 
@@ -75,18 +96,5 @@ impl Rabbit {
     pub fn moves(&mut self) {
         self.x_coord += self.x_direction;
         self.y_coord += self.y_direction;
-    }
-
-    pub fn border_check(&mut self, border: &(f32, f32, f32, f32)) {
-        //border check for x
-        if self.x_coord + self.x_direction < border.0 ||  self.x_coord + self.x_direction >= border.2 {
-            self.x_coord -= self.x_direction;
-            self.num_move = 0.0;
-        }
-        //border check for y
-        if self.y_coord + self.y_direction < border.1 || self.y_coord + self.y_direction >= border.3 {
-            self.y_coord -= self.y_direction;
-            self.num_move = 0.0;
-        }
     }
 }

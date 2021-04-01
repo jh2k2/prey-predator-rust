@@ -1,16 +1,40 @@
+use crate::traits::Traits;
 use rand::Rng;
 
 pub struct Fox {
     pub x_coord: f32,
     pub y_coord: f32,
     pub speed: f32,
-    pub size: f32,
-    pub acceleration: f32,
     pub x_direction: f32,
     pub y_direction: f32,
     pub num_move: f32,
+
+    //stats
+    pub state: i32, //-1 = dead, 0 = idle, 1 = hunt
     pub detection_range: f32,
-    pub state: i32 //0 = idle, 1 = hunt
+    pub size: f32,
+    pub hunger_rate: f32,
+    pub hunger: f32
+}
+
+impl Traits for Fox {
+    fn border_check(&mut self, border: &(f32, f32, f32, f32)) {
+        //border check for x
+        if self.x_coord + self.x_direction < border.0 ||  self.x_coord + self.x_direction >= border.2 {
+            self.x_coord -= self.x_direction;
+            self.num_move = 0.0;
+        }
+        //border check for y
+        if self.y_coord + self.y_direction < border.1 ||  self.y_coord + self.y_direction >= border.3 {
+            self.y_coord -= self.y_direction;
+            self.num_move = 0.0;
+        }
+    }
+    
+    fn moves(&mut self) {
+        self.x_coord += self.x_direction;
+        self.y_coord += self.y_direction;
+    }
 }
 
 impl Fox {
@@ -18,14 +42,27 @@ impl Fox {
         Fox {
             x_coord: x,
             y_coord: y,
-            speed: 1.0,
-            size: 2.0,
-            acceleration: 0.2,
+            speed: 2.0,
+            size: 1.5,
             x_direction: 1.0,
             y_direction: 1.0,
             num_move: 0.0,
             detection_range: 10.0,
             state: 1,
+            hunger: 50.0,
+            hunger_rate: 0.1
+        }
+    }
+
+    pub fn update_stats(&mut self) {
+        self.hunger -= self.hunger_rate;
+    }
+
+    pub fn determine_state(&mut self) {
+        match self.hunger {
+            y if y <= 0.0 => self.state = -1,
+            y if y < 50.0 => self.state = 1,
+            _ => self.state = 0
         }
     }
 
@@ -70,23 +107,5 @@ impl Fox {
         //randomize direction
         self.x_direction = rng.gen_range(-1..2) as f32;
         self.y_direction = rng.gen_range(-1..2) as f32;
-    }
-
-    pub fn moves(&mut self) {
-        self.x_coord += self.x_direction;
-        self.y_coord += self.y_direction;
-    }
-
-    pub fn border_check(&mut self, border: &(f32, f32, f32, f32)) {
-                //border check for x
-        if self.x_coord + self.x_direction < border.0 ||  self.x_coord + self.x_direction >= border.2 {
-            self.x_coord -= self.x_direction;
-            self.num_move = 0.0;
-        }
-        //border check for y
-        if self.y_coord + self.y_direction < border.1 ||  self.y_coord + self.y_direction >= border.3 {
-            self.y_coord -= self.y_direction;
-            self.num_move = 0.0;
-        }
     }
 }

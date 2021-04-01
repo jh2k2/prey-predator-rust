@@ -1,5 +1,6 @@
 use crate::rabbit::{Rabbit};
 use crate::fox::{Fox};
+use crate::traits::Traits;
 use rand::Rng;
 
 pub struct Board {
@@ -44,7 +45,9 @@ impl Board {
 
         let rabbit_vec:Vec<(f32, f32)> = self.rabbit.iter().map(|x| (x.x_coord, x.y_coord)).collect();
         for i in 0..fox_vec.len() {
+            self.fox[i].update_stats();
             for _i in 0..self.fox[i].speed as i32 {
+                self.fox[i].determine_state();
                 self.fox[i].determine_direction(&rabbit_vec);
                 self.fox[i].border_check(&self.border);
                 self.fox[i].moves();
@@ -66,14 +69,25 @@ impl Board {
 
     pub fn check_eaten(&mut self) {
         //TODO CHECK FOR COLLISION
-        for fox in &self.fox {
-            let index: Option<usize> = self.rabbit.iter().position(|r| r.x_coord == fox.x_coord && r.y_coord == fox.y_coord);
+        let fox_vec = &self.fox;
+        for i in 0..fox_vec.len() {
+            let index: Option<usize> = self.rabbit.iter().position(|r| r.x_coord == self.fox[i].x_coord && r.y_coord == self.fox[i].y_coord);
             match index {
                 Some(y) => {
-                    self.rabbit.remove(y)
+                    self.rabbit.remove(y);
+                    self.fox[i].hunger += 20.0;
                 },
-                None => Rabbit::new(1.0, 1.0)
+                None => ()
             };
+        }
+    }
+
+    pub fn check_death(&mut self) {
+        let fox_vec = &self.fox;
+        for i in 0..fox_vec.len() {
+            if self.fox[i].state == -1 {
+                self.fox.remove(i);
+            }
         }
     }
     
